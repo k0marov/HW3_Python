@@ -17,21 +17,15 @@ def apply_op(left, right, op):
 
 
 def evaluate(exp):
-    def eval_slice(start, end):
-        length = end-start
-        if length == 1:
-            return exp[0]
-        elif length == 3:
-            return apply_op(*exp[start:end])
-        left, right = 0, 0
-        if exp[start+2] in OPERATORS:
-            left = eval_slice(start, start+3)
-            right = eval_slice(start+3, end-1)
+    cache = []
+    for token in exp:
+        if token in OPERATORS:
+            right = cache.pop()
+            left = cache.pop()
+            cache.append(apply_op(left, right, token))
         else:
-            left = eval_slice(start, start)
-            right = eval_slice(start+1, end-1)
-        return apply_op(left, right, exp[end-1])
-    return eval_slice(0, len(exp))
+            cache.append(token)
+    return cache[0]
 
 
 exp = list(input().split())
