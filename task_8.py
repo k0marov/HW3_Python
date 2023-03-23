@@ -15,48 +15,20 @@ def apply_op(left, right, op):
         return l_op * r_op
     # raise Exception ...
 
-# def evaluate(left, right=[0], op=PLUS):
-#     if len(left) != 0:
-#         l_val = evaluate()
-#
-#
-
 
 def evaluate(exp):
     if len(exp) == 1:
-        return int(exp[0])
+        return exp[0]
     elif len(exp) == 3:
         return apply_op(*exp)
-    # left = apply_op(*exp[:3])
-    # right = apply_op(*exp[3:-1])
-    # return apply_op(left, right, exp[-1])
-
-    left, right, op = exp[:3]
-    if op in OPERATORS:
-        left = apply_op(left, right, op)
+    left, right = 0, 0
+    if exp[2] in OPERATORS:
+        left = evaluate(exp[:3])
         right = evaluate(exp[3:-1])
-        return apply_op(left, right, exp[-1])
     else:
+        left = evaluate([exp[0]])
         right = evaluate(exp[1:-1])
-        return apply_op(left, right, exp[-1])
-    #
-    # left = None
-    # right = None
-    # for i in range(len(exp)):
-    #     token = exp[i]
-    #     if token in OPERATORS:
-    #         left = apply_op(left, right, token)
-    #         right = evaluate(exp[i+1:-1])
-    #         return apply_op(left, right, exp[i-1])
-    #     elif left is None:
-    #         left = token
-    #     elif right is None:
-    #         right = token
-    #     else:
-    #         right = evaluate([right]+exp[i:-1])
-    #         return apply_op(left, right, exp[i-1])
-    #
-    # return 0
+    return apply_op(left, right, exp[-1])
 
 
 exp = list(input().split())
