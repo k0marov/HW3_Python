@@ -17,18 +17,21 @@ def apply_op(left, right, op):
 
 
 def evaluate(exp):
-    if len(exp) == 1:
-        return exp[0]
-    elif len(exp) == 3:
-        return apply_op(*exp)
-    left, right = 0, 0
-    if exp[2] in OPERATORS:
-        left = evaluate(exp[:3])
-        right = evaluate(exp[3:-1])
-    else:
-        left = evaluate([exp[0]])
-        right = evaluate(exp[1:-1])
-    return apply_op(left, right, exp[-1])
+    def eval_slice(start, end):
+        length = end-start
+        if length == 1:
+            return exp[0]
+        elif length == 3:
+            return apply_op(*exp[start:end])
+        left, right = 0, 0
+        if exp[start+2] in OPERATORS:
+            left = eval_slice(start, start+3)
+            right = eval_slice(start+3, end-1)
+        else:
+            left = eval_slice(start, start)
+            right = eval_slice(start+1, end-1)
+        return apply_op(left, right, exp[end-1])
+    return eval_slice(0, len(exp))
 
 
 exp = list(input().split())
